@@ -10,9 +10,9 @@ int id = 0;
 class WhatsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new Estado(),
-    );
+    return new MediaQuery(
+        data: new MediaQueryData(), child: new MaterialApp(home: new Estado(),debugShowCheckedModeBanner: false,));
+
   }
 }
 
@@ -32,6 +32,15 @@ class ChatScreenState extends State<Estado> {
 
   @override
   Widget build(BuildContext context) {
+
+    var a = obtener();
+    do {
+      var a = obtener();
+      if (a != null){
+        messages.add(ChatMessage(text: a));
+      }
+    } while (a != null);
+
     return new Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(7, 94, 84, 50),
@@ -100,9 +109,9 @@ class ChatScreenState extends State<Estado> {
                   icon: Icon(Icons.send),
                   color: Color.fromRGBO(7, 94, 84, 50),//new
                   onPressed: () {
+                    obtener();
                     insertar(textController.text);
                     handleSubmitted(textController.text);
-                    obtener();
                   },
               ), //new
             ),
@@ -121,6 +130,19 @@ class ChatScreenState extends State<Estado> {
     setState(() {
       messages.insert(0, message);
     });
+  }
+
+  String obtener() {
+    var mensaje;
+    var documento = Firestore.instance.collection("WhatsAppContacto").document('$id');
+    documento.get().then( (document) {
+      mensaje = document["Mensaje"];
+    });
+    return mensaje;
+//    bd.collection("WhasAppContacto").getDocuments()
+//        .then((QuerySnapshot snapshot) {
+//          snapshot.documents.forEach((f) => print("${f.data}"));
+//    });
   }
 
 }
@@ -186,18 +208,25 @@ class ChatMessage extends StatelessWidget {
 
 
 void insertar(String mensaje) async {
-  await bd.collection("WhatsAppContacto").add({'Mensaje': mensaje, 'id': id,});
+  await bd.collection("WhatsAppContacto").document('$id').setData({'Mensaje': mensaje});
   id++;
 }
 
-void obtener() async {
-  //int id2 = 0;
-  await bd.collection("WhatsAppContacto").where('id').getDocuments();
-
-  print('aaaa   $a' );
+String obtener() {
+  var mensaje;
+  var documento = Firestore.instance.collection("WhatsAppContacto").document('$id');
+  documento.get().then( (document) {
+    mensaje = document["Mensaje"];
+  });
+  return mensaje;
+//    bd.collection("WhasAppContacto").getDocuments()
+//        .then((QuerySnapshot snapshot) {
+//          snapshot.documents.forEach((f) => print("${f.data}"));
+//    });
 }
 
 void actualizar(String mensaje) async{
   await bd.collection("WhatsAppContacto").document('-LuO4kLpLue4t_vcxOEK').updateData({'mensaje': mensaje});
 }
+
 
