@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:emoji_picker/emoji_picker.dart';
+import 'package:camera/camera.dart';
 
 void main() => runApp(Chat());
 
 final bd = Firestore.instance;
+int id = 0;
 
 class Chat extends StatelessWidget {
   @override
@@ -76,7 +79,11 @@ class ChatState extends State<Estado> {
                 Icons.account_circle,
                 color: Colors.blue,
                 size: 40,
-              )),
+              ),
+                onPressed: (){
+
+              },
+              ),
               title: Column(
                 verticalDirection: VerticalDirection.down,
                 children: <Widget>[
@@ -105,18 +112,27 @@ class ChatState extends State<Estado> {
                     Icons.videocam,
                     color: Colors.white,
                   ),
+                  onPressed: (){
+
+                  },
                 ),
                 IconButton(
                   icon: Icon(
                     Icons.call,
                     color: Colors.white,
                   ),
+                  onPressed: (){
+
+                  },
                 ),
                 IconButton(
                   icon: Icon(
                     Icons.more_vert,
                     color: Colors.white,
                   ),
+                  onPressed: (){
+
+                  },
                 )
               ],
             ),
@@ -157,7 +173,18 @@ class ChatState extends State<Estado> {
         child: Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.insert_emoticon)
+              icon: Icon(Icons.insert_emoticon),
+              onPressed: (){
+                EmojiPicker(
+                  rows: 3,
+                  columns: 7,
+                  //recommendKeywords: ["racing", "horse"],
+                  numRecommended: 10,
+                  onEmojiSelected: (emoji, category) {
+                    print(emoji);
+                  },
+                );
+              }
             ),
             Flexible(
               child: TextField(
@@ -175,7 +202,10 @@ class ChatState extends State<Estado> {
                 icon: Icon(Icons.attach_file)
             ),
             IconButton(
-                icon: Icon(Icons.camera_alt)
+                icon: Icon(Icons.camera_alt),
+              onPressed: (){
+
+              },
             ),
             Container(
               //new
@@ -198,5 +228,6 @@ class ChatState extends State<Estado> {
 }
 
 void insertar(String mensaje) async {
-  await bd.collection("WhatsAppContacto").add({'Mensaje': mensaje});
+  await bd.collection("WhatsAppContacto").add({'id': id, 'Mensaje': mensaje});
+  id++;
 }
